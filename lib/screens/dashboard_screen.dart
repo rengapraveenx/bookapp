@@ -63,18 +63,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Expanded(
               child: CardStackSwiper(
                 cardsCount: _cardImages.length,
-            cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  image: DecorationImage(
-                    image: AssetImage(_cardImages[index]),
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              );
-            },
+                cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      image: DecorationImage(
+                        image: AssetImage(_cardImages[index]),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  );
+                },
                 allowedSwipeDirection: const AllowedSwipeDirection.only(left: true, right: true),
               ),
             ),
