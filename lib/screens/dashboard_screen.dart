@@ -65,7 +65,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(height: 160),
             Expanded(
               child: Transform.scale(
-                scale: 1.2,
+                scale: 1.5,
                 child: CardStackSwiper(
                   cardsCount: _cardImages.length,
                   cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
