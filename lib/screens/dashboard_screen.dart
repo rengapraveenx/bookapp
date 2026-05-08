@@ -68,7 +68,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Transform.scale(
                 scale: 1.1,
                 child: SizedBox(
-                  height: 400,
+                  height: 350,
                   child: CardStackSwiper(
                     cardsCount: _cardImages.length,
                     cardBuilder:
@@ -95,7 +95,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: 50),
               _AllMagazines(),
             ],
           ),
