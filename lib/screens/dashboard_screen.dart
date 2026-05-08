@@ -22,84 +22,72 @@ class _DashboardScreenState extends State<DashboardScreen> {
             onPressed: () {},
           ),
         ],
-        bottom: _DashboardBottom(
-          selectedIndex: _selectedIndex,
-          onIndexChanged: (index) => setState(() => _selectedIndex = index),
-        ),
+        bottom: const _SearchBarBottom(),
       ),
       body: Center(
         child: Text('Dashboard Content $_selectedIndex'),
       ),
-    );
-  }
-}
-
-class _DashboardBottom extends StatelessWidget implements PreferredSizeWidget {
-  final int selectedIndex;
-  final ValueChanged<int> onIndexChanged;
-
-  const _DashboardBottom({
-    required this.selectedIndex,
-    required this.onIndexChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: TextFormField(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide.none,
-              ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-            ),
-          ),
-        ),
-        Row(
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
               icon: Icon(
                 Icons.home,
-                color: selectedIndex == 0 ? Theme.of(context).colorScheme.primary : Colors.grey,
+                color: _selectedIndex == 0 ? Theme.of(context).colorScheme.primary : Colors.grey,
               ),
-              onPressed: () => onIndexChanged(0),
+              onPressed: () => setState(() => _selectedIndex = 0),
             ),
             IconButton(
               icon: Icon(
                 Icons.shopping_cart,
-                color: selectedIndex == 1 ? Theme.of(context).colorScheme.primary : Colors.grey,
+                color: _selectedIndex == 1 ? Theme.of(context).colorScheme.primary : Colors.grey,
               ),
-              onPressed: () => onIndexChanged(1),
+              onPressed: () => setState(() => _selectedIndex = 1),
             ),
             IconButton(
               icon: Icon(
                 Icons.search,
-                color: selectedIndex == 2 ? Theme.of(context).colorScheme.primary : Colors.grey,
+                color: _selectedIndex == 2 ? Theme.of(context).colorScheme.primary : Colors.grey,
               ),
-              onPressed: () => onIndexChanged(2),
+              onPressed: () => setState(() => _selectedIndex = 2),
             ),
             IconButton(
               icon: Icon(
                 Icons.person,
-                color: selectedIndex == 3 ? Theme.of(context).colorScheme.primary : Colors.grey,
+                color: _selectedIndex == 3 ? Theme.of(context).colorScheme.primary : Colors.grey,
               ),
-              onPressed: () => onIndexChanged(3),
+              onPressed: () => setState(() => _selectedIndex = 3),
             ),
           ],
         ),
-      ],
+      ),
+    );
+  }
+}
+
+class _SearchBarBottom extends StatelessWidget implements PreferredSizeWidget {
+  const _SearchBarBottom();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: TextFormField(
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+          prefixIcon: const Icon(Icons.search),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        ),
+      ),
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(120);
+  Size get preferredSize => const Size.fromHeight(60);
 }
