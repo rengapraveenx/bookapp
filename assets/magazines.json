@@ -1,0 +1,26 @@
+[
+  {
+    "thumbnail": "assets/b1.jpg",
+    "index": "01",
+    "title": "Apple Play Book",
+    "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  },
+  {
+    "thumbnail": "assets/b2.jpg",
+    "index": "02",
+    "title": "Sunset Vibes",
+    "desc": "Sed do eiusmod tempor incididunt ut labore et dolore."
+  },
+  {
+    "thumbnail": "assets/b3.jpg",
+    "index": "03",
+    "title": "Mountain Echo",
+    "desc": "Ut enim ad minim veniam, quis nostrud exercitation."
+  },
+  {
+    "thumbnail": "assets/b4.jpg",
+    "index": "04",
+    "title": "Ocean Dreams",
+    "desc": "Duis aute irure dolor in reprehenderit in voluptate."
+  }
+]

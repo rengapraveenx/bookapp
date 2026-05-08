@@ -78,8 +78,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           transitionDuration: const Duration(milliseconds: 600),
                           pageBuilder: (context, animation, secondaryAnimation) {
                             return MagazineDetailScreen(
-                              imagePath: _cardImages[index],
-                              index: index,
+                              initialIndex: index,
                             );
                           },
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
