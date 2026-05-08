@@ -73,7 +73,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               );
             },
-            allowedSwipeDirection: const AllowedSwipeDirection.all(),
+            allowedSwipeDirection: const AllowedSwipeDirection.only(left: true, right: true),
           ),
         ),
       ),
