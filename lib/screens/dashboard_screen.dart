@@ -2,6 +2,7 @@ import 'package:card_stack_swiper/card_stack_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'magazine_detail_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -71,6 +72,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   height: 300,
                   child: CardStackSwiper(
                     cardsCount: _cardImages.length,
+                    onPressed: (index) {
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          transitionDuration: const Duration(milliseconds: 600),
+                          pageBuilder: (context, animation, secondaryAnimation) {
+                            return MagazineDetailScreen(
+                              imagePath: _cardImages[index],
+                              index: index,
+                            );
+                          },
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    },
                     cardBuilder:
                         (
                           context,
@@ -78,16 +98,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           horizontalOffsetPercentage,
                           verticalOffsetPercentage,
                         ) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              image: DecorationImage(
-                                image: AssetImage(_cardImages[index]),
-                                fit: BoxFit.contain,
-                              ),
+                      return Hero(
+                        tag: 'swiper_$index',
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            image: DecorationImage(
+                              image: AssetImage(_cardImages[index]),
+                              fit: BoxFit.contain,
                             ),
-                          );
-                        },
+                          ),
+                        ),
+                      );
+                    },
                     allowedSwipeDirection: const AllowedSwipeDirection.only(
                       left: true,
                       right: true,
