@@ -180,7 +180,7 @@ class _AllMagazines extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -192,12 +192,11 @@ class _AllMagazines extends StatelessWidget {
               color: Colors.black,
             ),
           ),
-          const SizedBox(height: 8),
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
+              crossAxisCount: 2,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
