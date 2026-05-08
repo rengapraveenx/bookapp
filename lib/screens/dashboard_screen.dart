@@ -62,13 +62,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: CardStackSwiper(
             cardsCount: _cardImages.length,
             cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  image: DecorationImage(
-                    image: AssetImage(_cardImages[index]),
-                    fit: BoxFit.cover,
+              return AspectRatio(
+                aspectRatio: 4 / 3,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: AssetImage(_cardImages[index]),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               );
@@ -126,7 +129,7 @@ class _SearchBarBottom extends StatelessWidget implements PreferredSizeWidget {
       child: TextFormField(
         decoration: InputDecoration(
           filled: true,
-          fillColor: const Color(0xFF232925),
+          // No fill color
           prefixIcon: const Icon(Icons.search, color: Colors.white),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
