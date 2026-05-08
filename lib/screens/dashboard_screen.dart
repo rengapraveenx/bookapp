@@ -1,7 +1,7 @@
+import 'package:card_stack_swiper/card_stack_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:card_stack_swiper/card_stack_swiper.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -41,7 +41,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(CupertinoIcons.barcode_viewfinder, color: Colors.white),
+            icon: const Icon(
+              CupertinoIcons.barcode_viewfinder,
+              color: Colors.white,
+            ),
             onPressed: () {},
           ),
         ],
@@ -59,22 +62,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         child: Column(
           children: [
-            const SizedBox(height: 220),
+            const SizedBox(height: 160),
             Expanded(
-              child: CardStackSwiper(
-                cardsCount: _cardImages.length,
-                cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      image: DecorationImage(
-                        image: AssetImage(_cardImages[index]),
-                        fit: BoxFit.contain,
+              child: Transform.scale(
+                scale: 1.2,
+                child: CardStackSwiper(
+                  cardsCount: _cardImages.length,
+                  cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          image: AssetImage(_cardImages[index]),
+                          fit: BoxFit.contain,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                allowedSwipeDirection: const AllowedSwipeDirection.only(left: true, right: true),
+                    );
+                  },
+                  allowedSwipeDirection: const AllowedSwipeDirection.only(left: true, right: true),
+                ),
               ),
             ),
             _AllMagazines(),
@@ -186,10 +192,7 @@ class _AllMagazines extends StatelessWidget {
             itemBuilder: (context, index) {
               return ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  _magazineImages[index],
-                  fit: BoxFit.cover,
-                ),
+                child: Image.asset(_magazineImages[index], fit: BoxFit.cover),
               );
             },
           ),
