@@ -60,22 +60,15 @@ class MagazineDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // GestureDetector(
-                  //   onTap: () => Navigator.of(context).pop(),
-                  //   child: Hero(
-                  //     tag: 'swiper_$index',
-                  //     child: ClipRRect(
-                  //       borderRadius: BorderRadius.circular(12),
-                  //       child: Image.asset(
-                  //         imagePath,
-                  //         fit: BoxFit.cover,
-                  //         width: double.infinity,
-                  //         height: 300,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  const SizedBox(height: 20),
+                  const Text(
+                    '01',
+                    style: TextStyle(
+                      fontSize: 200,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   const Text(
                     'Magazine Details',
                     style: TextStyle(
