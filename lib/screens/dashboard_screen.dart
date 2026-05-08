@@ -68,7 +68,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Transform.scale(
                 scale: 1.1,
                 child: SizedBox(
-                  height: 350,
+                  height: 300,
                   child: CardStackSwiper(
                     cardsCount: _cardImages.length,
                     cardBuilder:
@@ -192,7 +192,7 @@ class _AllMagazines extends StatelessWidget {
               color: Colors.black,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
