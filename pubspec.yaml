@@ -60,6 +60,8 @@ flutter:
     - assets/f2.jpg
     - assets/f3.webp
     - assets/f4.jpg
+    - assets/f5.jpg
+    - assets/f6.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

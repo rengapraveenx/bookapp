@@ -175,6 +175,8 @@ class _AllMagazines extends StatelessWidget {
     'assets/f2.jpg',
     'assets/f3.webp',
     'assets/f4.jpg',
+    'assets/f5.jpg',
+    'assets/f6.jpg',
   ];
 
   @override
@@ -210,7 +212,7 @@ class _AllMagazines extends StatelessWidget {
             runSpacing: 10,
             children: _magazineImages.map((image) {
               return SizedBox(
-                width: (MediaQuery.of(context).size.width - 42) / 2,
+                width: (MediaQuery.of(context).size.width - 65) / 3,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.asset(image, fit: BoxFit.cover),
