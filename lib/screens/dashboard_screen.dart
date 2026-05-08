@@ -130,7 +130,7 @@ class _SearchBarBottom extends StatelessWidget implements PreferredSizeWidget {
       child: TextFormField(
         decoration: InputDecoration(
           filled: true,
-          // No fill color
+          fillColor: const Color(0xFF1A201C),
           prefixIcon: const Icon(Icons.search, color: Colors.white),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
