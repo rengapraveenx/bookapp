@@ -184,29 +184,39 @@ class _AllMagazines extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'All magazines',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'All magazines',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.arrow_forward_ios_outlined,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+            ],
           ),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-            ),
-            itemCount: _magazineImages.length,
-            itemBuilder: (context, index) {
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(_magazineImages[index], fit: BoxFit.cover),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: _magazineImages.map((image) {
+              return SizedBox(
+                width: (MediaQuery.of(context).size.width - 42) / 2,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(image, fit: BoxFit.cover),
+                ),
               );
-            },
+            }).toList(),
           ),
         ],
       ),
