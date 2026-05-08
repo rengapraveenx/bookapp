@@ -63,27 +63,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
             children: [
               const SizedBox(height: 220),
               Transform.scale(
-              child: Transform.scale(
                 scale: 1.5,
-                child: CardStackSwiper(
-                  cardsCount: _cardImages.length,
-                  cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        image: DecorationImage(
-                          image: AssetImage(_cardImages[index]),
-                          fit: BoxFit.contain,
+                child: SizedBox(
+                  height: 400,
+                  child: CardStackSwiper(
+                    cardsCount: _cardImages.length,
+                    cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage(_cardImages[index]),
+                            fit: BoxFit.contain,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  allowedSwipeDirection: const AllowedSwipeDirection.only(left: true, right: true),
+                      );
+                    },
+                    allowedSwipeDirection: const AllowedSwipeDirection.only(left: true, right: true),
+                  ),
                 ),
               ),
-            ),
-            _AllMagazines(),
-          ],
+              _AllMagazines(),
+            ],
           ),
         ),
         bottomNavigationBar: BottomAppBar(
