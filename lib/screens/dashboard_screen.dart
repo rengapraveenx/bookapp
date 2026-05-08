@@ -65,7 +65,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 cardsCount: _cardImages.length,
                 cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
                   return AspectRatio(
-                    aspectRatio: 4 / 3,
+                    aspectRatio: 3 / 4,
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: BoxDecoration(
