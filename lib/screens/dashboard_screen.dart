@@ -179,37 +179,48 @@ class _AllMagazines extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'All magazines',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'All magazines',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+                height: 1.0,
+              ),
             ),
-          ),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
+            GestureDetector(
+              onTap: () {},
+              child: const Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.white,
+                size: 16,
+              ),
             ),
-            itemCount: _magazineImages.length,
-            itemBuilder: (context, index) {
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(_magazineImages[index], fit: BoxFit.cover),
+          ],
+        ),
+        Transform.translate(
+          offset: const Offset(0, -12),
+          child: Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: _magazineImages.map((image) {
+              return SizedBox(
+                width: (MediaQuery.of(context).size.width - 42) / 2,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(image, fit: BoxFit.cover),
+                ),
               );
-            },
+            }).toList(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
