@@ -57,27 +57,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
             colors: [Color(0xFF040905), Colors.black, Color(0xFFF9F3F9)],
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 160),
-          child: CardStackSwiper(
-            cardsCount: _cardImages.length,
-            cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
-              return AspectRatio(
-                aspectRatio: 4 / 3,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(
-                      image: AssetImage(_cardImages[index]),
-                      fit: BoxFit.cover,
+        child: Column(
+          children: [
+            const SizedBox(height: 160),
+            Expanded(
+              child: CardStackSwiper(
+                cardsCount: _cardImages.length,
+                cardBuilder: (context, index, horizontalOffsetPercentage, verticalOffsetPercentage) {
+                  return AspectRatio(
+                    aspectRatio: 4 / 3,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          image: AssetImage(_cardImages[index]),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              );
-            },
-            allowedSwipeDirection: const AllowedSwipeDirection.only(left: true, right: true),
-          ),
+                  );
+                },
+                allowedSwipeDirection: const AllowedSwipeDirection.only(left: true, right: true),
+              ),
+            ),
+            _AllMagazines(),
+          ],
         ),
       ),
       bottomNavigationBar: BottomAppBar(
@@ -146,4 +151,54 @@ class _SearchBarBottom extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(60);
+}
+
+class _AllMagazines extends StatelessWidget {
+  final List<String> _magazineImages = [
+    'assets/f1.webp',
+    'assets/f2.jpg',
+    'assets/f3.webp',
+    'assets/f4.jpg',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'All magazines',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 12),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 4 / 3,
+            ),
+            itemCount: _magazineImages.length,
+            itemBuilder: (context, index) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  _magazineImages[index],
+                  fit: BoxFit.cover,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }
