@@ -64,36 +64,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
             IconButton(
               icon: Icon(
                 Icons.home,
-                color: _selectedIndex == 0
-                    ? Theme.of(context).colorScheme.primary
-                    : Colors.grey,
+                color: _selectedIndex == 0 ? Colors.black : Colors.grey,
               ),
               onPressed: () => setState(() => _selectedIndex = 0),
             ),
             IconButton(
               icon: Icon(
                 Icons.shopping_cart,
-                color: _selectedIndex == 1
-                    ? Theme.of(context).colorScheme.primary
-                    : Colors.grey,
+                color: _selectedIndex == 1 ? Colors.black : Colors.grey,
               ),
               onPressed: () => setState(() => _selectedIndex = 1),
             ),
             IconButton(
               icon: Icon(
                 Icons.search,
-                color: _selectedIndex == 2
-                    ? Theme.of(context).colorScheme.primary
-                    : Colors.grey,
+                color: _selectedIndex == 2 ? Colors.black : Colors.grey,
               ),
               onPressed: () => setState(() => _selectedIndex = 2),
             ),
             IconButton(
               icon: Icon(
                 Icons.person,
-                color: _selectedIndex == 3
-                    ? Theme.of(context).colorScheme.primary
-                    : Colors.grey,
+                color: _selectedIndex == 3 ? Colors.black : Colors.grey,
               ),
               onPressed: () => setState(() => _selectedIndex = 3),
             ),
