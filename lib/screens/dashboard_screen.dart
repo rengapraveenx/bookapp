@@ -1,7 +1,7 @@
-import 'package:card_stack_swiper/card_stack_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:card_stack_swiper/card_stack_swiper.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -28,41 +28,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(CupertinoIcons.book, color: Colors.white),
-            SizedBox(width: 8),
-            Text('magaz', style: TextStyle(color: Colors.white)),
-          ],
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF040905), Colors.black, Color(0xFFF9F3F9)],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              CupertinoIcons.barcode_viewfinder,
-              color: Colors.white,
-            ),
-            onPressed: () {},
-          ),
-        ],
-        bottom: const _SearchBarBottom(),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF040905), Colors.black, Color(0xFFF9F3F9)],
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          title: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(CupertinoIcons.book, color: Colors.white),
+              SizedBox(width: 8),
+              Text('magaz', style: TextStyle(color: Colors.white)),
+            ],
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(CupertinoIcons.barcode_viewfinder, color: Colors.white),
+              onPressed: () {},
+            ),
+          ],
+          bottom: const _SearchBarBottom(),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
-        child: Column(
+        body: Column(
           children: [
-            const SizedBox(height: 280),
+            const SizedBox(height: 220),
             Expanded(
               child: Transform.scale(
                 scale: 1.5,
@@ -86,40 +84,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
             _AllMagazines(),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: Icon(
-                CupertinoIcons.home,
-                color: _selectedIndex == 0 ? Colors.black : Colors.grey,
+        bottomNavigationBar: BottomAppBar(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                icon: Icon(
+                  CupertinoIcons.home,
+                  color: _selectedIndex == 0 ? Colors.black : Colors.grey,
+                ),
+                onPressed: () => setState(() => _selectedIndex = 0),
               ),
-              onPressed: () => setState(() => _selectedIndex = 0),
-            ),
-            IconButton(
-              icon: Icon(
-                CupertinoIcons.shopping_cart,
-                color: _selectedIndex == 1 ? Colors.black : Colors.grey,
+              IconButton(
+                icon: Icon(
+                  CupertinoIcons.shopping_cart,
+                  color: _selectedIndex == 1 ? Colors.black : Colors.grey,
+                ),
+                onPressed: () => setState(() => _selectedIndex = 1),
               ),
-              onPressed: () => setState(() => _selectedIndex = 1),
-            ),
-            IconButton(
-              icon: Icon(
-                CupertinoIcons.search,
-                color: _selectedIndex == 2 ? Colors.black : Colors.grey,
+              IconButton(
+                icon: Icon(
+                  CupertinoIcons.search,
+                  color: _selectedIndex == 2 ? Colors.black : Colors.grey,
+                ),
+                onPressed: () => setState(() => _selectedIndex = 2),
               ),
-              onPressed: () => setState(() => _selectedIndex = 2),
-            ),
-            IconButton(
-              icon: Icon(
-                CupertinoIcons.person,
-                color: _selectedIndex == 3 ? Colors.black : Colors.grey,
+              IconButton(
+                icon: Icon(
+                  CupertinoIcons.person,
+                  color: _selectedIndex == 3 ? Colors.black : Colors.grey,
+                ),
+                onPressed: () => setState(() => _selectedIndex = 3),
               ),
-              onPressed: () => setState(() => _selectedIndex = 3),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -192,7 +190,10 @@ class _AllMagazines extends StatelessWidget {
             itemBuilder: (context, index) {
               return ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.asset(_magazineImages[index], fit: BoxFit.cover),
+                child: Image.asset(
+                  _magazineImages[index],
+                  fit: BoxFit.cover,
+                ),
               );
             },
           ),
