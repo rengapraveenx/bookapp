@@ -58,10 +58,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
-        body: Column(
-          children: [
-            const SizedBox(height: 220),
-            Expanded(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 220),
+              Transform.scale(
               child: Transform.scale(
                 scale: 1.5,
                 child: CardStackSwiper(
@@ -83,6 +84,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             _AllMagazines(),
           ],
+          ),
         ),
         bottomNavigationBar: BottomAppBar(
           child: Row(
@@ -184,7 +186,6 @@ class _AllMagazines extends StatelessWidget {
               crossAxisCount: 3,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
-              childAspectRatio: 4 / 3,
             ),
             itemCount: _magazineImages.length,
             itemBuilder: (context, index) {
