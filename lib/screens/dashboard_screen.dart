@@ -62,7 +62,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         child: Column(
           children: [
-            const SizedBox(height: 160),
+            const SizedBox(height: 280),
             Expanded(
               child: Transform.scale(
                 scale: 1.5,
