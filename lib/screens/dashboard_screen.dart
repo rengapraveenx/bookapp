@@ -59,7 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         child: Column(
           children: [
-            const SizedBox(height: 160),
+            const SizedBox(height: 220),
             Expanded(
               child: CardStackSwiper(
                 cardsCount: _cardImages.length,
