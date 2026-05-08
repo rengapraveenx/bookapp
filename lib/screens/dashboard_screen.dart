@@ -27,11 +27,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        leading: const Icon(Icons.book),
-        title: const Text('magaz'),
+        leading: const Icon(Icons.book, color: Colors.white),
+        title: const Text('magaz', style: TextStyle(color: Colors.white)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.scanner),
+            icon: const Icon(Icons.scanner, color: Colors.white),
             onPressed: () {},
           ),
         ],
