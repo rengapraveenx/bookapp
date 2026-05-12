@@ -160,25 +160,53 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
               ),
             ],
           ),
-          //todo
-          // Positioned(
-          //   top: 0,
-          //   left: 0,
-          //   right: 0,
-          //   child: AnimatedBuilder(
-          //     animation: _scrollController,
-          //     builder: (context, _) {
-          //       final progress = _scrollController.hasClients
-          //           ? (_scrollController.offset / _headerMax).clamp(0.0, 1.0)
-          //           : 0.0;
-          //       return Container(
-          //         height: MediaQuery.of(context).padding.top + kToolbarHeight,
-          //         // color: Color.fromRGBO(4, 9, 5, progress),
-          //         color: Colors.red,
-          //       );
-          //     },
-          //   ),
-          // ),
+          AnimatedBuilder(
+            animation: _scrollController,
+            builder: (context, _) {
+              final progress = _scrollController.hasClients
+                  ? (_scrollController.offset / _headerMax).clamp(0.0, 1.0)
+                  : 0.0;
+              final top = MediaQuery.of(context).padding.top;
+              return Stack(
+                children: [
+                  Positioned(
+                    top: top,
+                    left: 0,
+                    child: Transform.translate(
+                      offset: Offset(lerpDouble(-60, 0, progress)!, 0),
+                      child: Opacity(
+                        opacity: progress,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.white,
+                          ),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: top,
+                    right: 0,
+                    child: Transform.translate(
+                      offset: Offset(lerpDouble(60, 0, progress)!, 0),
+                      child: Opacity(
+                        opacity: progress,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.share_outlined,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );
