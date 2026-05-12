@@ -20,14 +20,13 @@ class MagazineDetailScreen extends StatefulWidget {
 
 class _MagazineDetailScreenState extends State<MagazineDetailScreen>
     with SingleTickerProviderStateMixin {
-  late PageController _pageController;
+  late PageController _sliderController;
   late ScrollController _scrollController;
   late AnimationController _btnAnim;
   late Animation<double> _btnProgress;
   List<dynamic> _magazines = [];
-  int _currentPage = 0;
-  int get _actualIndex =>
-      _currentPage % (_magazines.isEmpty ? 1 : _magazines.length);
+  int _currentSliderIndex = 0;
+  int get _actualIndex => _currentSliderIndex;
 
   static const double _headerMax = 650;
 
@@ -35,12 +34,13 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
   void initState() {
     super.initState();
     _loadMagazines();
-    _pageController = PageController(initialPage: 1000 + widget.initialIndex);
-    _currentPage = 1000 + widget.initialIndex;
-    _pageController.addListener(() {
-      setState(() {
-        _currentPage = _pageController.page!.round();
-      });
+    _sliderController = PageController(initialPage: 1000 + widget.initialIndex);
+    _currentSliderIndex = widget.initialIndex;
+    _sliderController.addListener(() {
+      if (_sliderController.page != null && _magazines.isNotEmpty) {
+        final idx = _sliderController.page!.round() % _magazines.length;
+        if (idx != _currentSliderIndex) setState(() => _currentSliderIndex = idx);
+      }
     });
     _scrollController = ScrollController();
     _btnAnim = AnimationController(
@@ -60,7 +60,7 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _sliderController.dispose();
     _scrollController.dispose();
     _btnAnim.dispose();
     super.dispose();
@@ -69,7 +69,7 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
   @override
   Widget build(BuildContext context) {
     final headerImage = _magazines.isNotEmpty
-        ? _magazines[widget.initialIndex]['thumbnail'] as String
+        ? _magazines[_currentSliderIndex]['thumbnail'] as String
         : widget.imagePath;
 
     return Scaffold(
@@ -86,9 +86,12 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
                   maxExtent: _headerMax,
                   initialIndex: widget.initialIndex,
                   magazineIndex: _magazines.isNotEmpty
-                      ? _magazines[widget.initialIndex]['index'] as String
+                      ? _magazines[_currentSliderIndex]['index'] as String
                       : '',
                   sContorller: _scrollController,
+                  magazines: _magazines,
+                  sliderController: _sliderController,
+                  initialSliderIndex: widget.initialIndex,
                 ),
               ),
               SliverToBoxAdapter(
@@ -248,15 +251,21 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   final String imagePath;
   final double _maxExtent;
   final int initialIndex;
+  final int initialSliderIndex;
   final String magazineIndex;
-  ScrollController sContorller;
+  final ScrollController sContorller;
+  final List<dynamic> magazines;
+  final PageController sliderController;
 
   _HeaderDelegate({
     required this.imagePath,
     required double maxExtent,
     required this.initialIndex,
+    required this.initialSliderIndex,
     required this.magazineIndex,
     required this.sContorller,
+    required this.magazines,
+    required this.sliderController,
   }) : _maxExtent = maxExtent;
 
   @override
@@ -291,22 +300,51 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                 opacity: imageOpacity,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 60),
-                  child: Center(
-                    child: Hero(
-                      tag: 'swiper_$initialIndex',
-                      child: Transform.scale(
-                        scale: 1 - (progress * 0.3),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.asset(
-                            imagePath,
-                            fit: BoxFit.fitHeight,
-                            height: 300 * (1 - progress * 0.5),
+                  child: magazines.isEmpty
+                      ? Center(
+                          child: Hero(
+                            tag: 'swiper_$initialIndex',
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                imagePath,
+                                fit: BoxFit.fitHeight,
+                                height: 300 * (1 - progress * 0.5),
+                              ),
+                            ),
                           ),
+                        )
+                      : PageView.builder(
+                          controller: sliderController,
+                          itemBuilder: (context, index) {
+                            final mag = magazines[index % magazines.length];
+                            final thumb = mag['thumbnail'] as String;
+                            final isInitial =
+                                (index % magazines.length) == initialSliderIndex;
+                            return Center(
+                              child: Transform.scale(
+                                scale: 1 - (progress * 0.3),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: isInitial
+                                      ? Hero(
+                                          tag: 'swiper_$initialIndex',
+                                          child: Image.asset(
+                                            thumb,
+                                            fit: BoxFit.fitHeight,
+                                            height: 300 * (1 - progress * 0.5),
+                                          ),
+                                        )
+                                      : Image.asset(
+                                          thumb,
+                                          fit: BoxFit.fitHeight,
+                                          height: 300 * (1 - progress * 0.5),
+                                        ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],
@@ -376,6 +414,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant _HeaderDelegate oldDelegate) {
     return oldDelegate.imagePath != imagePath ||
-        oldDelegate.magazineIndex != magazineIndex;
+        oldDelegate.magazineIndex != magazineIndex ||
+        oldDelegate.magazines != magazines;
   }
 }
