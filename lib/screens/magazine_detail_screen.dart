@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
   late Animation<double> _btnProgress;
   List<dynamic> _magazines = [];
   int _currentSliderIndex = 0;
+  final ValueNotifier<bool> _isSwiping = ValueNotifier(false);
   int get _actualIndex => _currentSliderIndex;
 
   static const double _headerMax = 650;
@@ -37,9 +39,13 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
     _sliderController = PageController(initialPage: 1000 + widget.initialIndex);
     _currentSliderIndex = widget.initialIndex;
     _sliderController.addListener(() {
-      if (_sliderController.page != null && _magazines.isNotEmpty) {
-        final idx = _sliderController.page!.round() % _magazines.length;
-        if (idx != _currentSliderIndex) setState(() => _currentSliderIndex = idx);
+      if (_sliderController.page != null) {
+        final page = _sliderController.page!;
+        _isSwiping.value = (page - page.round()).abs() > 0.02;
+        if (_magazines.isNotEmpty) {
+          final idx = page.round() % _magazines.length;
+          if (idx != _currentSliderIndex) setState(() => _currentSliderIndex = idx);
+        }
       }
     });
     _scrollController = ScrollController();
@@ -63,6 +69,7 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
     _sliderController.dispose();
     _scrollController.dispose();
     _btnAnim.dispose();
+    _isSwiping.dispose();
     super.dispose();
   }
 
@@ -92,6 +99,7 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
                   magazines: _magazines,
                   sliderController: _sliderController,
                   initialSliderIndex: widget.initialIndex,
+                  isSwipingNotifier: _isSwiping,
                 ),
               ),
               SliverToBoxAdapter(
@@ -256,6 +264,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   final ScrollController sContorller;
   final List<dynamic> magazines;
   final PageController sliderController;
+  final ValueNotifier<bool> isSwipingNotifier;
 
   _HeaderDelegate({
     required this.imagePath,
@@ -266,6 +275,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
     required this.sContorller,
     required this.magazines,
     required this.sliderController,
+    required this.isSwipingNotifier,
   }) : _maxExtent = maxExtent;
 
   @override
@@ -296,6 +306,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                   ),
                 ),
               ),
+              _FireBackground(isSwipingNotifier: isSwipingNotifier),
               Opacity(
                 opacity: imageOpacity,
                 child: Padding(
@@ -416,5 +427,125 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
     return oldDelegate.imagePath != imagePath ||
         oldDelegate.magazineIndex != magazineIndex ||
         oldDelegate.magazines != magazines;
+  }
+}
+
+// ── Fire simulation ──────────────────────────────────────────────────────────
+
+class _FireParticle {
+  Offset position;
+  double radius;
+  Color color;
+  double opacity;
+  final double lifetime;
+  double age;
+  final double dx;
+
+  _FireParticle({
+    required this.position,
+    required this.radius,
+    required this.color,
+    required this.opacity,
+    required this.lifetime,
+    required this.dx,
+  }) : age = 0;
+
+  void update(double dt) {
+    age += dt;
+    final t = age / lifetime;
+    position = Offset(position.dx + dx, position.dy - 1.8);
+    opacity = (1 - t).clamp(0.0, 1.0);
+  }
+
+  bool get isAlive => age < lifetime;
+}
+
+class _FirePainter extends CustomPainter {
+  final List<_FireParticle> particles;
+  _FirePainter(this.particles);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..blendMode = BlendMode.plus;
+    for (final p in particles) {
+      paint.color = p.color.withValues(alpha: p.opacity);
+      canvas.drawCircle(p.position, p.radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter old) => true;
+}
+
+class _FireBackground extends StatefulWidget {
+  final ValueNotifier<bool> isSwipingNotifier;
+  const _FireBackground({required this.isSwipingNotifier});
+
+  @override
+  State<_FireBackground> createState() => _FireBackgroundState();
+}
+
+class _FireBackgroundState extends State<_FireBackground>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  final List<_FireParticle> _particles = [];
+  final Random _rng = Random();
+  Size _size = Size.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 60),
+    )
+      ..addListener(_tick)
+      ..repeat();
+  }
+
+  void _tick() {
+    if (!mounted) return;
+    const dt = 1 / 60;
+    for (final p in _particles) { p.update(dt); }
+    _particles.removeWhere((p) => !p.isAlive);
+    if (widget.isSwipingNotifier.value && _size != Size.zero) {
+      for (int i = 0; i < 4; i++) { _spawn(); }
+    }
+    setState(() {});
+  }
+
+  void _spawn() {
+    final x = _rng.nextDouble() * _size.width;
+    _particles.add(_FireParticle(
+      position: Offset(x, _size.height + 4),
+      radius: 8 + _rng.nextDouble() * 10,
+      color: Color.lerp(
+        Colors.deepOrange,
+        Colors.yellowAccent,
+        _rng.nextDouble(),
+      )!,
+      opacity: 1,
+      lifetime: 1.5 + _rng.nextDouble(),
+      dx: (_rng.nextDouble() - 0.5) * 1.5,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        _size = constraints.biggest;
+        return CustomPaint(
+          painter: _FirePainter(List.from(_particles)),
+          child: const SizedBox.expand(),
+        );
+      },
+    );
   }
 }
