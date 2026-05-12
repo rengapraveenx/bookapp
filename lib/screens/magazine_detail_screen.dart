@@ -75,23 +75,25 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
-                  Text(
-                    _magazines[_actualIndex]['title'],
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  if (_magazines.isNotEmpty) ...[
+                    Text(
+                      _magazines[_actualIndex]['title'],
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    _magazines[_actualIndex]['desc'],
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.white70,
-                      height: 1.5,
+                    const SizedBox(height: 12),
+                    Text(
+                      _magazines[_actualIndex]['desc'],
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white70,
+                        height: 1.5,
+                      ),
                     ),
-                  ),
+                  ],
                   const SizedBox(height: 600),
                 ],
               ),
