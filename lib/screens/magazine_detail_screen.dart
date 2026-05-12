@@ -22,7 +22,8 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
   late PageController _pageController;
   List<dynamic> _magazines = [];
   int _currentPage = 0;
-  int get _actualIndex => _currentPage % (_magazines.isEmpty ? 1 : _magazines.length);
+  int get _actualIndex =>
+      _currentPage % (_magazines.isEmpty ? 1 : _magazines.length);
 
   @override
   void initState() {
@@ -76,6 +77,19 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
                 children: [
                   const SizedBox(height: 20),
                   if (_magazines.isNotEmpty) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text(
+                        _magazines[_actualIndex]['index'],
+                        style: const TextStyle(
+                          fontSize: 250,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: -50,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     Text(
                       _magazines[_actualIndex]['title'],
                       style: const TextStyle(
