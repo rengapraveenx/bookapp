@@ -74,25 +74,11 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 20),
                   if (_magazines.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16.0),
-                      child: Text(
-                        _magazines[_actualIndex]['index'],
-                        style: const TextStyle(
-                          fontSize: 250,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: -50,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
                     Text(
                       _magazines[_actualIndex]['title'],
                       style: const TextStyle(
@@ -110,8 +96,43 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
                         height: 1.5,
                       ),
                     ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                      style: TextStyle(fontSize: 14, color: Colors.white70, height: 1.7),
+                    ),
+                    const SizedBox(height: 24),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.asset(
+                        'assets/f1.webp',
+                        width: double.infinity,
+                        height: 220,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+                      style: TextStyle(fontSize: 14, color: Colors.white70, height: 1.7),
+                    ),
+                    const SizedBox(height: 24),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.asset(
+                        'assets/f2.jpg',
+                        width: double.infinity,
+                        height: 220,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper.',
+                      style: TextStyle(fontSize: 14, color: Colors.white70, height: 1.7),
+                    ),
                   ],
-                  const SizedBox(height: 600),
+                  const SizedBox(height: 60),
                 ],
               ),
             ),
@@ -153,7 +174,10 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
               Opacity(
                 opacity: imageOpacity,
                 child: ImageFiltered(
-                  imageFilter: ImageFilter.blur(sigmaX: blurAmount, sigmaY: blurAmount),
+                  imageFilter: ImageFilter.blur(
+                    sigmaX: blurAmount,
+                    sigmaY: blurAmount,
+                  ),
                   child: Transform.scale(
                     scale: imageScale,
                     child: Image.asset(imagePath, fit: BoxFit.cover),
