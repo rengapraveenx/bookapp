@@ -18,9 +18,12 @@ class MagazineDetailScreen extends StatefulWidget {
   State<MagazineDetailScreen> createState() => _MagazineDetailScreenState();
 }
 
-class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
+class _MagazineDetailScreenState extends State<MagazineDetailScreen>
+    with SingleTickerProviderStateMixin {
   late PageController _pageController;
   late ScrollController _scrollController;
+  late AnimationController _btnAnim;
+  late Animation<double> _btnProgress;
   List<dynamic> _magazines = [];
   int _currentPage = 0;
   int get _actualIndex =>
@@ -40,6 +43,12 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
       });
     });
     _scrollController = ScrollController();
+    _btnAnim = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _btnProgress = CurvedAnimation(parent: _btnAnim, curve: Curves.easeOut);
+    _btnAnim.forward();
   }
 
   Future<void> _loadMagazines() async {
@@ -53,6 +62,7 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
   void dispose() {
     _pageController.dispose();
     _scrollController.dispose();
+    _btnAnim.dispose();
     super.dispose();
   }
 
@@ -161,49 +171,70 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
             ],
           ),
           AnimatedBuilder(
-            animation: _scrollController,
+            animation: _btnProgress,
             builder: (context, _) {
-              final progress = _scrollController.hasClients
-                  ? (_scrollController.offset / _headerMax).clamp(0.0, 1.0)
-                  : 0.0;
-              final top = MediaQuery.of(context).padding.top;
-              return Stack(
-                children: [
-                  Positioned(
-                    top: top,
-                    left: 0,
-                    child: Transform.translate(
-                      offset: Offset(lerpDouble(-60, 0, progress)!, 0),
-                      child: Opacity(
-                        opacity: progress,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back_ios_new,
-                            color: Colors.white,
+              final v = _btnProgress.value;
+              final top = MediaQuery.of(context).padding.top + 4;
+              return Padding(
+                padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: top,
+                      left: 8,
+                      child: Transform.translate(
+                        offset: Offset(lerpDouble(-60, 0, v)!, 0),
+                        child: Opacity(
+                          opacity: v,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: const Icon(
+                                Icons.arrow_back_ios_new,
+                                color: Colors.black,
+                                size: 18,
+                              ),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
                           ),
-                          onPressed: () => Navigator.of(context).pop(),
                         ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    top: top,
-                    right: 0,
-                    child: Transform.translate(
-                      offset: Offset(lerpDouble(60, 0, progress)!, 0),
-                      child: Opacity(
-                        opacity: progress,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.share_outlined,
-                            color: Colors.white,
+                    Positioned(
+                      top: top,
+                      right: 8,
+                      child: Transform.translate(
+                        offset: Offset(lerpDouble(60, 0, v)!, 0),
+                        child: Opacity(
+                          opacity: v,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: const Icon(
+                                Icons.share_outlined,
+                                color: Colors.black,
+                                size: 18,
+                              ),
+                              onPressed: () {},
+                            ),
                           ),
-                          onPressed: () {},
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),
