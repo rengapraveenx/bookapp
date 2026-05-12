@@ -265,10 +265,17 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                     final progress = sContorller.hasClients
                         ? (sContorller.offset / maxExtent).clamp(0.0, 1.0)
                         : 0.0;
+                    final maxHeight =
+                        MediaQuery.of(context).padding.top +
+                        kToolbarHeight +
+                        20;
+                    final colorProgress = ((progress - 0.7) / 0.3).clamp(
+                      0.0,
+                      1.0,
+                    );
                     return Container(
-                      height:
-                          MediaQuery.of(context).padding.top + kToolbarHeight,
-                      color: Color.fromRGBO(4, 9, 5, progress),
+                      height: maxHeight * progress,
+                      color: Color.fromRGBO(4, 9, 5, colorProgress),
                     );
                   },
                 ),
@@ -300,7 +307,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => _maxExtent;
 
   @override
-  double get minExtent => 80;
+  double get minExtent => 110;
 
   @override
   bool shouldRebuild(covariant _HeaderDelegate oldDelegate) {
