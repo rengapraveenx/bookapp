@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:palette_generator/palette_generator.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -20,7 +22,7 @@ class MagazineDetailScreen extends StatefulWidget {
 }
 
 class _MagazineDetailScreenState extends State<MagazineDetailScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late PageController _sliderController;
   late ScrollController _scrollController;
   late AnimationController _btnAnim;
@@ -28,6 +30,11 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
   List<dynamic> _magazines = [];
   int _currentSliderIndex = 0;
   final ValueNotifier<bool> _isSwiping = ValueNotifier(false);
+  final Map<int, Color> _bgColors = {};
+  Color _currentBgColor = const Color(0xFF040905);
+  Color _previousBgColor = const Color(0xFF040905);
+  late AnimationController _bgColorAnim;
+  late Animation<double> _bgColorProgress;
   int get _actualIndex => _currentSliderIndex;
 
   static const double _headerMax = 650;
@@ -44,10 +51,25 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
         _isSwiping.value = (page - page.round()).abs() > 0.02;
         if (_magazines.isNotEmpty) {
           final idx = page.round() % _magazines.length;
-          if (idx != _currentSliderIndex) setState(() => _currentSliderIndex = idx);
+          if (idx != _currentSliderIndex) {
+            setState(() {
+              _currentSliderIndex = idx;
+              _previousBgColor = _currentBgColor;
+              _currentBgColor = _bgColors[idx] ?? const Color(0xFF040905);
+            });
+            _bgColorAnim.forward(from: 0);
+          }
         }
       }
     });
+    _bgColorAnim = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+    );
+    _bgColorProgress = CurvedAnimation(
+      parent: _bgColorAnim,
+      curve: Curves.easeOut,
+    );
     _scrollController = ScrollController();
     _btnAnim = AnimationController(
       vsync: this,
@@ -62,6 +84,24 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
     setState(() {
       _magazines = jsonDecode(data);
     });
+    _extractBgColors();
+  }
+
+  Future<void> _extractBgColors() async {
+    for (int i = 0; i < _magazines.length; i++) {
+      final thumb = _magazines[i]['thumbnail'] as String;
+      final generator = await PaletteGenerator.fromImageProvider(
+        AssetImage(thumb),
+        size: const Size(100, 100),
+      );
+      final color = generator.darkVibrantColor?.color ??
+          generator.darkMutedColor?.color ??
+          const Color(0xFF040905);
+      _bgColors[i] = color;
+      if (i == _currentSliderIndex && mounted) {
+        setState(() => _currentBgColor = color);
+      }
+    }
   }
 
   @override
@@ -69,6 +109,7 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
     _sliderController.dispose();
     _scrollController.dispose();
     _btnAnim.dispose();
+    _bgColorAnim.dispose();
     _isSwiping.dispose();
     super.dispose();
   }
@@ -80,9 +121,18 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
         : widget.imagePath;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF040905),
+      backgroundColor: _previousBgColor,
       body: Stack(
         children: [
+          Container(color: _previousBgColor),
+          AnimatedBuilder(
+            animation: _bgColorProgress,
+            builder: (context, _) => Align(
+              alignment: Alignment.centerRight,
+              widthFactor: _bgColorProgress.value,
+              child: Container(color: _currentBgColor),
+            ),
+          ),
           CustomScrollView(
             controller: _scrollController,
             slivers: [
@@ -100,6 +150,9 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
                   sliderController: _sliderController,
                   initialSliderIndex: widget.initialIndex,
                   isSwipingNotifier: _isSwiping,
+                  previousBgColor: _previousBgColor,
+                  currentBgColor: _currentBgColor,
+                  bgColorProgress: _bgColorProgress,
                 ),
               ),
               SliverToBoxAdapter(
@@ -265,6 +318,9 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   final List<dynamic> magazines;
   final PageController sliderController;
   final ValueNotifier<bool> isSwipingNotifier;
+  final Color previousBgColor;
+  final Color currentBgColor;
+  final Animation<double> bgColorProgress;
 
   _HeaderDelegate({
     required this.imagePath,
@@ -276,6 +332,9 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
     required this.magazines,
     required this.sliderController,
     required this.isSwipingNotifier,
+    required this.previousBgColor,
+    required this.currentBgColor,
+    required this.bgColorProgress,
   }) : _maxExtent = maxExtent;
 
   @override
@@ -292,7 +351,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Container(color: const Color(0xFF040905)),
+              const ColoredBox(color: Colors.transparent),
               Opacity(
                 opacity: imageOpacity,
                 child: ImageFiltered(
@@ -426,7 +485,9 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant _HeaderDelegate oldDelegate) {
     return oldDelegate.imagePath != imagePath ||
         oldDelegate.magazineIndex != magazineIndex ||
-        oldDelegate.magazines != magazines;
+        oldDelegate.magazines != magazines ||
+        oldDelegate.currentBgColor != currentBgColor ||
+        oldDelegate.previousBgColor != previousBgColor;
   }
 }
 

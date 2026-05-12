@@ -33,6 +33,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   card_stack_swiper: ^1.0.0
   m3_carousel: ^2.1.0
+  palette_generator: ^0.3.3
 
 dev_dependencies:
   flutter_test:
