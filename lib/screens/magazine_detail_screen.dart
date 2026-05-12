@@ -6,8 +6,13 @@ import 'package:flutter/services.dart';
 
 class MagazineDetailScreen extends StatefulWidget {
   final int initialIndex;
+  final String imagePath;
 
-  const MagazineDetailScreen({super.key, required this.initialIndex});
+  const MagazineDetailScreen({
+    super.key,
+    required this.initialIndex,
+    required this.imagePath,
+  });
 
   @override
   State<MagazineDetailScreen> createState() => _MagazineDetailScreenState();
@@ -17,7 +22,7 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
   late PageController _pageController;
   List<dynamic> _magazines = [];
   int _currentPage = 0;
-  int get _actualIndex => _currentPage % _magazines.length;
+  int get _actualIndex => _currentPage % (_magazines.isEmpty ? 1 : _magazines.length);
 
   @override
   void initState() {
@@ -47,62 +52,20 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_magazines.isEmpty) {
-      return const Scaffold(
-        backgroundColor: Color(0xFF040905),
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    final currentMagazine = _magazines[_actualIndex];
+    final headerImage = _magazines.isNotEmpty
+        ? _magazines[widget.initialIndex]['thumbnail'] as String
+        : widget.imagePath;
 
     return Scaffold(
       backgroundColor: const Color(0xFF040905),
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            expandedHeight: 400,
-            pinned: false,
-            backgroundColor: Colors.transparent,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.asset(currentMagazine['thumbnail'], fit: BoxFit.cover),
-                  BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                    child: Container(
-                      color: Colors.black.withValues(alpha: 0.1),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 300,
-                    child: PageView.builder(
-                      controller: _pageController,
-                      itemBuilder: (context, index) {
-                        final actualIndex = index % _magazines.length;
-                        final magazine = _magazines[actualIndex];
-                        return Padding(
-                          padding: const EdgeInsets.all(80),
-                          child: GestureDetector(
-                            onTap: () => Navigator.of(context).pop(),
-                            child: Hero(
-                              tag: 'swiper_$actualIndex',
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.asset(
-                                  magazine['thumbnail'],
-                                  fit: BoxFit.fitHeight,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _BlurredBackgroundDelegate(
+              imagePath: headerImage,
+              maxExtent: 400,
+              initialIndex: widget.initialIndex,
             ),
           ),
           SliverToBoxAdapter(
@@ -111,44 +74,9 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // SizedBox(
-                  //   height: 300,
-                  //   child: PageView.builder(
-                  //     controller: _pageController,
-                  //     itemBuilder: (context, index) {
-                  //       final actualIndex = index % _magazines.length;
-                  //       final magazine = _magazines[actualIndex];
-                  //       return Padding(
-                  //         padding: const EdgeInsets.symmetric(horizontal: 8),
-                  //         child: GestureDetector(
-                  //           onTap: () => Navigator.of(context).pop(),
-                  //           child: Hero(
-                  //             tag: 'swiper_$actualIndex',
-                  //             child: ClipRRect(
-                  //               borderRadius: BorderRadius.circular(12),
-                  //               child: Image.asset(
-                  //                 magazine['thumbnail'],
-                  //                 fit: BoxFit.cover,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       );
-                  //     },
-                  //   ),
-                  // ),
                   const SizedBox(height: 20),
                   Text(
-                    currentMagazine['index'],
-                    style: const TextStyle(
-                      fontSize: 200,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    currentMagazine['title'],
+                    _magazines[_actualIndex]['title'],
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -157,7 +85,7 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    currentMagazine['desc'],
+                    _magazines[_actualIndex]['desc'],
                     style: const TextStyle(
                       fontSize: 14,
                       color: Colors.white70,
@@ -172,5 +100,70 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
         ],
       ),
     );
+  }
+}
+
+class _BlurredBackgroundDelegate extends SliverPersistentHeaderDelegate {
+  final String imagePath;
+  final double _maxExtent;
+  final int initialIndex;
+
+  _BlurredBackgroundDelegate({
+    required this.imagePath,
+    required double maxExtent,
+    required this.initialIndex,
+  }) : _maxExtent = maxExtent;
+
+  @override
+  Widget build(context, shrinkOffset, overlapsContent) {
+    final progress = (shrinkOffset / maxExtent).clamp(0.0, 1.0);
+    final blurAmount = 20 * (1 - progress);
+    final imageScale = 1.0 + (progress * 0.5);
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Transform.scale(
+          scale: imageScale,
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.cover,
+          ),
+        ),
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: blurAmount, sigmaY: blurAmount),
+          child: Container(
+            color: Colors.black.withValues(alpha: 0.1),
+          ),
+        ),
+        Center(
+          child: Hero(
+            tag: 'swiper_$initialIndex',
+            child: Transform.scale(
+              scale: 1 - (progress * 0.3),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.fitHeight,
+                  height: 300 * (1 - progress * 0.5),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  double get maxExtent => _maxExtent;
+
+  @override
+  double get minExtent => 80;
+
+  @override
+  bool shouldRebuild(covariant _BlurredBackgroundDelegate oldDelegate) {
+    return oldDelegate.imagePath != imagePath;
   }
 }

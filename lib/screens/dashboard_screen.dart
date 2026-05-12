@@ -2,6 +2,7 @@ import 'package:card_stack_swiper/card_stack_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'magazine_detail_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -66,57 +67,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Column(
             children: [
               const SizedBox(height: 180),
-              Transform.scale(
-                scale: 1.1,
-                child: SizedBox(
-                  height: 300,
-                  child: CardStackSwiper(
-                    cardsCount: _cardImages.length,
-                    onPressed: (index) {
-                      Navigator.of(context).push(
-                        PageRouteBuilder(
-                          transitionDuration: const Duration(milliseconds: 600),
-                          pageBuilder: (context, animation, secondaryAnimation) {
-                            return MagazineDetailScreen(
-                              initialIndex: index,
-                            );
-                          },
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: child,
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    cardBuilder:
-                        (
-                          context,
-                          index,
-                          horizontalOffsetPercentage,
-                          verticalOffsetPercentage,
-                        ) {
-                      return Hero(
-                        tag: 'swiper_$index',
-                        child: Container(
-                          decoration: BoxDecoration(
+
+              SizedBox(
+                height: 300,
+                child: CardStackSwiper(
+                  cardsCount: _cardImages.length,
+                  onPressed: (index) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            MagazineDetailScreen(
+                        initialIndex: index,
+                        imagePath: _cardImages[index],
+                      ),
+                      ),
+                    );
+                  },
+                  cardBuilder:
+                      (
+                        context,
+                        index,
+                        horizontalOffsetPercentage,
+                        verticalOffsetPercentage,
+                      ) {
+                        return Hero(
+                          tag: 'swiper_$index',
+                          child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                              image: AssetImage(_cardImages[index]),
+                            child: Image.asset(
+                              _cardImages[index],
                               fit: BoxFit.contain,
                             ),
                           ),
-                        ),
-                      );
-                    },
-                    allowedSwipeDirection: const AllowedSwipeDirection.only(
-                      left: true,
-                      right: true,
-                    ),
+                        );
+                      },
+                  allowedSwipeDirection: const AllowedSwipeDirection.only(
+                    left: true,
+                    right: true,
                   ),
                 ),
               ),
+
               SizedBox(height: 50),
               _AllMagazines(),
             ],
