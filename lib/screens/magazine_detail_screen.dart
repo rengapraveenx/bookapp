@@ -284,11 +284,11 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
               Align(
                 alignment: Alignment(alignX, 0),
                 child: Padding(
-                  padding: EdgeInsets.only(left: lerpDouble(26, 0, progress)!),
+                  padding: EdgeInsets.only(left: lerpDouble(30, 0, progress)!),
                   child: Text(
                     magazineIndex,
                     style: TextStyle(
-                      fontSize: lerpDouble(250, 40, progress),
+                      fontSize: lerpDouble(220, 40, progress),
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       letterSpacing: lerpDouble(-50, 0, progress),
