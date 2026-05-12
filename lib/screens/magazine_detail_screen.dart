@@ -62,11 +62,14 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
       body: CustomScrollView(
         slivers: [
           SliverPersistentHeader(
-            pinned: false,
-            delegate: _BlurredBackgroundDelegate(
+            pinned: true,
+            delegate: _HeaderDelegate(
               imagePath: headerImage,
-              maxExtent: 400,
+              maxExtent: 650,
               initialIndex: widget.initialIndex,
+              magazineIndex: _magazines.isNotEmpty
+                  ? _magazines[widget.initialIndex]['index'] as String
+                  : '',
             ),
           ),
           SliverToBoxAdapter(
@@ -119,46 +122,77 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
   }
 }
 
-class _BlurredBackgroundDelegate extends SliverPersistentHeaderDelegate {
+class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   final String imagePath;
   final double _maxExtent;
   final int initialIndex;
+  final String magazineIndex;
 
-  _BlurredBackgroundDelegate({
+  _HeaderDelegate({
     required this.imagePath,
     required double maxExtent,
     required this.initialIndex,
+    required this.magazineIndex,
   }) : _maxExtent = maxExtent;
 
   @override
   Widget build(context, shrinkOffset, overlapsContent) {
     final progress = (shrinkOffset / maxExtent).clamp(0.0, 1.0);
+    final imageOpacity = (1 - progress * 2).clamp(0.0, 1.0);
     final blurAmount = 20 * (1 - progress);
     final imageScale = 1.0 + (progress * 0.5);
+    final alignX = lerpDouble(-1.0, 0.0, progress)!;
 
-    return Stack(
-      fit: StackFit.expand,
+    return Column(
       children: [
-        ImageFiltered(
-          imageFilter: ImageFilter.blur(sigmaX: blurAmount, sigmaY: blurAmount),
-          child: Transform.scale(
-            scale: imageScale,
-            child: Image.asset(imagePath, fit: BoxFit.cover),
+        Expanded(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Container(color: const Color(0xFF040905)),
+              Opacity(
+                opacity: imageOpacity,
+                child: ImageFiltered(
+                  imageFilter: ImageFilter.blur(sigmaX: blurAmount, sigmaY: blurAmount),
+                  child: Transform.scale(
+                    scale: imageScale,
+                    child: Image.asset(imagePath, fit: BoxFit.cover),
+                  ),
+                ),
+              ),
+              Opacity(
+                opacity: imageOpacity,
+                child: Center(
+                  child: Hero(
+                    tag: 'swiper_$initialIndex',
+                    child: Transform.scale(
+                      scale: 1 - (progress * 0.3),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          imagePath,
+                          fit: BoxFit.fitHeight,
+                          height: 300 * (1 - progress * 0.5),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-        Container(color: Colors.black.withValues(alpha: 0.1)),
-        Center(
-          child: Hero(
-            tag: 'swiper_$initialIndex',
-            child: Transform.scale(
-              scale: 1 - (progress * 0.3),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  imagePath,
-                  fit: BoxFit.fitHeight,
-                  height: 300 * (1 - progress * 0.5),
-                ),
+        Align(
+          alignment: Alignment(alignX, 0),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              magazineIndex,
+              style: TextStyle(
+                fontSize: lerpDouble(250, 40, progress),
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                letterSpacing: lerpDouble(-50, 0, progress),
               ),
             ),
           ),
@@ -174,7 +208,8 @@ class _BlurredBackgroundDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => 80;
 
   @override
-  bool shouldRebuild(covariant _BlurredBackgroundDelegate oldDelegate) {
-    return oldDelegate.imagePath != imagePath;
+  bool shouldRebuild(covariant _HeaderDelegate oldDelegate) {
+    return oldDelegate.imagePath != imagePath ||
+        oldDelegate.magazineIndex != magazineIndex;
   }
 }
