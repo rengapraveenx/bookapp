@@ -2,10 +2,9 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:palette_generator/palette_generator.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 class MagazineDetailScreen extends StatefulWidget {
   final int initialIndex;
@@ -94,7 +93,8 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
         AssetImage(thumb),
         size: const Size(100, 100),
       );
-      final color = generator.darkVibrantColor?.color ??
+      final color =
+          generator.darkVibrantColor?.color ??
           generator.darkMutedColor?.color ??
           const Color(0xFF040905);
       _bgColors[i] = color;
@@ -390,7 +390,8 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                             final mag = magazines[index % magazines.length];
                             final thumb = mag['thumbnail'] as String;
                             final isInitial =
-                                (index % magazines.length) == initialSliderIndex;
+                                (index % magazines.length) ==
+                                initialSliderIndex;
                             return Center(
                               child: Transform.scale(
                                 scale: 1 - (progress * 0.3),
@@ -446,7 +447,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
                     );
                     return Container(
                       height: maxHeight * progress,
-                      color: Color.fromRGBO(4, 9, 5, colorProgress),
+                      color: currentBgColor.withValues(alpha: colorProgress),
                     );
                   },
                 ),
@@ -556,39 +557,43 @@ class _FireBackgroundState extends State<_FireBackground>
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )
-      ..addListener(_tick)
-      ..repeat();
+    _ctrl =
+        AnimationController(vsync: this, duration: const Duration(seconds: 60))
+          ..addListener(_tick)
+          ..repeat();
   }
 
   void _tick() {
     if (!mounted) return;
     const dt = 1 / 60;
-    for (final p in _particles) { p.update(dt); }
+    for (final p in _particles) {
+      p.update(dt);
+    }
     _particles.removeWhere((p) => !p.isAlive);
     if (widget.isSwipingNotifier.value && _size != Size.zero) {
-      for (int i = 0; i < 4; i++) { _spawn(); }
+      for (int i = 0; i < 4; i++) {
+        _spawn();
+      }
     }
     setState(() {});
   }
 
   void _spawn() {
     final x = _rng.nextDouble() * _size.width;
-    _particles.add(_FireParticle(
-      position: Offset(x, _size.height + 4),
-      radius: 8 + _rng.nextDouble() * 10,
-      color: Color.lerp(
-        Colors.deepOrange,
-        Colors.yellowAccent,
-        _rng.nextDouble(),
-      )!,
-      opacity: 1,
-      lifetime: 1.5 + _rng.nextDouble(),
-      dx: (_rng.nextDouble() - 0.5) * 1.5,
-    ));
+    _particles.add(
+      _FireParticle(
+        position: Offset(x, _size.height + 4),
+        radius: 8 + _rng.nextDouble() * 10,
+        color: Color.lerp(
+          Colors.deepOrange,
+          Colors.yellowAccent,
+          _rng.nextDouble(),
+        )!,
+        opacity: 1,
+        lifetime: 1.5 + _rng.nextDouble(),
+        dx: (_rng.nextDouble() - 0.5) * 1.5,
+      ),
+    );
   }
 
   @override
