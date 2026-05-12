@@ -176,7 +176,7 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen>
               final v = _btnProgress.value;
               final top = MediaQuery.of(context).padding.top + 4;
               return Padding(
-                padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
+                padding: const EdgeInsets.only(top: 10, right: 16, left: 16),
                 child: Stack(
                   children: [
                     Positioned(
@@ -289,17 +289,20 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
               ),
               Opacity(
                 opacity: imageOpacity,
-                child: Center(
-                  child: Hero(
-                    tag: 'swiper_$initialIndex',
-                    child: Transform.scale(
-                      scale: 1 - (progress * 0.3),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.asset(
-                          imagePath,
-                          fit: BoxFit.fitHeight,
-                          height: 300 * (1 - progress * 0.5),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 60),
+                  child: Center(
+                    child: Hero(
+                      tag: 'swiper_$initialIndex',
+                      child: Transform.scale(
+                        scale: 1 - (progress * 0.3),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(
+                            imagePath,
+                            fit: BoxFit.fitHeight,
+                            height: 300 * (1 - progress * 0.5),
+                          ),
                         ),
                       ),
                     ),
