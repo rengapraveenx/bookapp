@@ -125,19 +125,14 @@ class _BlurredBackgroundDelegate extends SliverPersistentHeaderDelegate {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Transform.scale(
-          scale: imageScale,
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
+        ImageFiltered(
+          imageFilter: ImageFilter.blur(sigmaX: blurAmount, sigmaY: blurAmount),
+          child: Transform.scale(
+            scale: imageScale,
+            child: Image.asset(imagePath, fit: BoxFit.cover),
           ),
         ),
-        BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blurAmount, sigmaY: blurAmount),
-          child: Container(
-            color: Colors.black.withValues(alpha: 0.1),
-          ),
-        ),
+        Container(color: Colors.black.withValues(alpha: 0.1)),
         Center(
           child: Hero(
             tag: 'swiper_$initialIndex',
