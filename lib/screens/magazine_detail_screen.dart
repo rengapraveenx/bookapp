@@ -62,7 +62,7 @@ class _MagazineDetailScreenState extends State<MagazineDetailScreen> {
       body: CustomScrollView(
         slivers: [
           SliverPersistentHeader(
-            pinned: true,
+            pinned: false,
             delegate: _BlurredBackgroundDelegate(
               imagePath: headerImage,
               maxExtent: 400,
